@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Outkast Radio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        h1 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            color: #e74c3c;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #c0392b;
+        }
+
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .info-box {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid #f39c12;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px 0;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="loginScreen">
+        <div class="container">
+            <div class="login-box">
+                <h1>🎸 OUTKAST RADIO ADMIN</h1>
+                <p>Panel de Administración</p>
+                
+                <label>Usuario:</label>
+                <input type="text" id="usuario" value="admin">
+                
+                <label>Contraseña:</label>
+                <input type="password" id="password" value="outkast2025">
+                
+                <button onclick="entrar()">🔑 Entrar al Panel</button>
+                
+                <div id="errorLogin" class="error">Usuario o contraseña incorrectos</div>
+                
+                <div class="info-box">
+                    <h4 style="color: #f39c12;">📋 Credenciales de acceso:</h4>
+                    <p><strong>Usuario:</strong> admin</p>
+                    <p><strong>Contraseña:</strong> outkast2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <div id="adminPanel" class="admin-panel">
+        <button class="logout-btn" onclick="salir()">🚪 Salir</button>
+        
+        <div class="container">
+            <h1>🎸 PANEL DE CONTROL - OUTKAST RADIO</h1>
+            
+            <div class="grid">
+                <!-- CONFIGURAR RADIO -->
+                <div class="card">
+                    <h3>🎵 Configurar Radio</h3>
+                    <label>Código de tu radio (iframe o HTML):</label>
+                    <textarea id="codigoRadio" rows="4" placeholder='Ejemplo: <iframe src="https://zeno.fm/player/outkast-radio" width="300" height="200"></iframe>'></textarea>
+                    
+                    <button onclick="guardarRadio()">💾 Guardar Radio</button>
+                    <button onclick="probarRadio()">👁️ Vista Previa</button>
+                    
+                    <div id="successRadio" class="success">✅ Radio configurada correctamente</div>
+                </div>
+
+                <!-- CONTENIDO -->
+                <div class="card">
+                    <h3>📝 Contenido del Sitio</h3>
+                    
+                    <label>Título de la radio:</label>
+                    <input type="text" id="titulo" value="OUTKAST RADIO">
+                    
+                    <label>Descripción:</label>
+                    <textarea id="descripcion" rows="2">La mejor música rock las 24 horas - Transmisión Online</textarea>
+                    
+                    <label>Texto "Quiénes Somos":</label>
+                    <textarea id="quienes" rows="3">Somos una radio online dedicada al rock y la música alternativa...</textarea>
+                    
+                    <button onclick="guardarContenido()">💾 Guardar Contenido</button>
+                    
+                    <div id="successContenido" class="success">✅ Contenido guardado</div>
+                </div>
+
+                <!-- REDES SOCIALES -->
+                <div class="card">
+                    <h3>🌐 Redes Sociales</h3>
+                    
+                    <label>🔵 Facebook:</label>
+                    <input type="url" id="facebook" placeholder="https://facebook.com/outkastradio">
+                    
+                    <label>📷 Instagram:</label>
+                    <input type="url" id="instagram" placeholder="https://instagram.com/outkastradio">
+                    
+                    <label>📺 YouTube:</label>
+                    <input type="url" id="youtube" placeholder="https://youtube.com/@outkastradio">
+                    
+                    <button onclick="guardarRedes()">💾 Guardar Enlaces</button>
+                    
+                    <div id="successRedes" class="success">✅ Enlaces guardados</div>
+                </div>
+
+                <!-- MERCADO PAGO -->
+                <div class="card">
+                    <h3>💳 Mercado Pago</h3>
+                    
+                    <label>Código Plan Básico ($500):</label>
+                    <textarea id="mpBasico" rows="3" placeholder="Pega aquí tu código de Mercado Pago para plan básico"></textarea>
+                    
+                    <label>Código Plan Premium ($800):</label>
+                    <textarea id="mpPremium" rows="3" placeholder="Pega aquí tu código de Mercado Pago para plan premium"></textarea>
+                    
+                    <button onclick="guardarPagos()">💾 Guardar Pagos</button>
+                    
+                    <div id="successPagos" class="success">✅ Configuración de pagos guardada</div>
+                </div>
+            </div>
+
+            <!-- GENERAR SITIO -->
+            <div class="card">
+                <h3>🚀 Generar Sitio Web Final</h3>
+                <p>Una vez que hayas configurado todo, genera tu sitio web público:</p>
+                
+                <button onclick="generarSitio()" style="background: #27ae60;">🚀 Generar index.html</button>
+                <button onclick="descargarConfig()" style="background: #3498db;">📋 Descargar Configuración</button>
+                
+                <div id="successGenerar" class="success">✅ Sitio generado y descargado correctamente</div>
+                
+                <div class="info-box">
+                    <h4 style="color: #f39c12;">📁 Instrucciones para subir a tu hosting:</h4>
+                    <ol>
+                        <li>Descarga el archivo <strong>index.html</strong> generado</li>
+                        <li>Sube este archivo <strong>admin.html</strong> también</li>
+                        <li>Coloca ambos en la carpeta raíz de tu hosting</li>
+                        <li>Tu sitio estará en: <strong>tudominio.com</strong></li>
+                        <li>Tu admin estará en: <strong>tudominio.com/admin.html</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales simples
+        var datosConfig = {
+            radio: '',
+            titulo: 'OUTKAST RADIO',
+            descripcion: 'La mejor música rock las 24 horas - Transmisión Online',
+            quienes: 'Somos una radio online dedicada al rock...',
+            facebook: '',
+            instagram: '',
+            youtube: '',
+            mpBasico: '',
+            mpPremium: ''
+        };
+
+        // Función de login simple
+        function entrar() {
+            var usuario = document.getElementById('usuario').value;
+            var password = document.getElementById('password').value;
+            
+            if (usuario == 'admin' && password == 'outkast2025') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                cargarDatos();
+            } else {
+                document.getElementById('errorLogin').style.display = 'block';
+                setTimeout(function() {
+                    document.getElementById('errorLogin').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Función de logout
+        function salir() {
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Cargar datos guardados
+        function cargarDatos() {
+            try {
+                var guardado = localStorage.getItem('outkastConfig');
+                if (guardado) {
+                    datosConfig = JSON.parse(guardado);
+                    
+                    document.getElementById('codigoRadio').value = datosConfig.radio;
+                    document.getElementById('titulo').value = datosConfig.titulo;
+                    document.getElementById('descripcion').value = datosConfig.descripcion;
+                    document.getElementById('quienes').value = datosConfig.quienes;
+                    document.getElementById('facebook').value = datosConfig.facebook;
+                    document.getElementById('instagram').value = datosConfig.instagram;
+                    document.getElementById('youtube').value = datosConfig.youtube;
+                    document.getElementById('mpBasico').value = datosConfig.mpBasico;
+                    document.getElementById('mpPremium').value = datosConfig.mpPremium;
+                }
+            } catch (e) {
+                // Si hay error, usar valores por defecto
+            }
+        }
+
+        // Guardar radio
+        function guardarRadio() {
+            datosConfig.radio = document.getElementById('codigoRadio').value;
+            guardarTodo();
+            mostrarMensaje('successRadio');
+        }
+
+        // Probar radio
+        function probarRadio() {
+            var codigo = document.getElementById('codigoRadio').value;
+            if (codigo) {
+                var ventana = window.open('', '_blank');
+                ventana.document.write('<html><head><title>Vista Previa</title></head><body style="padding:20px;background:#2c3e50;color:white;"><h2>Vista Previa - Outkast Radio</h2><div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:10px;">' + codigo + '</div></body></html>');
+            } else {
+                alert('Primero ingresa el código de tu radio');
+            }
+        }
+
+        // Guardar contenido
+        function guardarContenido() {
+            datosConfig.titulo = document.getElementById('titulo').value;
+            datosConfig.descripcion = document.getElementById('descripcion').value;
+            datosConfig.quienes = document.getElementById('quienes').value;
+            guardarTodo();
+            mostrarMensaje('successContenido');
+        }
+
+        // Guardar redes
+        function guardarRedes() {
+            datosConfig.facebook = document.getElementById('facebook').value;
+            datosConfig.instagram = document.getElementById('instagram').value;
+            datosConfig.youtube = document.getElementById('youtube').value;
+            guardarTodo();
+            mostrarMensaje('successRedes');
+        }
+
+        // Guardar pagos
+        function guardarPagos() {
+            datosConfig.mpBasico = document.getElementById('mpBasico').value;
+            datosConfig.mpPremium = document.getElementById('mpPremium').value;
+            guardarTodo();
+            mostrarMensaje('successPagos');
+        }
+
+        // Generar sitio
+        function generarSitio() {
+            if (!datosConfig.radio) {
+                alert('❌ Primero configura tu radio antes de generar el sitio');
+                return;
+            }
+            
+            var html = crearHTML();
+            descargarArchivo('index.html', html);
+            mostrarMensaje('successGenerar');
+        }
+
+        // Crear HTML del sitio público
+        function crearHTML() {
+            var html = '<!DOCTYPE html>\n<html lang="es">\n<head>\n';
+            html += '    <meta charset="UTF-8">\n';
+            html += '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
+            html += '    <title>' + datosConfig.titulo + '</title>\n';
+            html += '    <style>\n';
+            html += '        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #0f0f23, #1a1a2e); color: white; margin: 0; }\n';
+            html += '        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }\n';
+            html += '        h1 { text-align: center; font-size: 3rem; color: #ff6b6b; }\n';
+            html += '        .radio-player { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; margin: 40px 0; text-align: center; }\n';
+            html += '        .section { padding: 60px 0; }\n';
+            html += '        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; margin: 20px 0; }\n';
+            html += '    </style>\n';
+            html += '</head>\n<body>\n';
+            html += '    <div class="container">\n';
+            html += '        <h1>' + datosConfig.titulo + '</h1>\n';
+            html += '        <p style="text-align:center;font-size:1.2rem;">' + datosConfig.descripcion + '</p>\n';
+            html += '        \n';
+            html += '        <div class="radio-player">\n';
+            html += '            ' + datosConfig.radio + '\n';
+            html += '        </div>\n';
+            html += '        \n';
+            html += '        <div class="section">\n';
+            html += '            <div class="card">\n';
+            html += '                <h2 style="color:#ff6b6b;">Quiénes Somos</h2>\n';
+            html += '                <p>' + datosConfig.quienes + '</p>\n';
+            html += '            </div>\n';
+            html += '        </div>\n';
+            html += '        \n';
+            html += '        <div style="text-align:center;margin:40px 0;">\n';
+            html += '            <h3 style="color:#ff6b6b;">Síguenos en:</h3>\n';
+            if (datosConfig.facebook) html += '            <a href="' + datosConfig.facebook + '" style="color:#3498db;margin:0 10px;">Facebook</a>\n';
+            if (datosConfig.instagram) html += '            <a href="' + datosConfig.instagram + '" style="color:#e74c3c;margin:0 10px;">Instagram</a>\n';
+            if (datosConfig.youtube) html += '            <a href="' + datosConfig.youtube + '" style="color:#e67e22;margin:0 10px;">YouTube</a>\n';
+            html += '        </div>\n';
+            html += '    </div>\n';
+            html += '</body>\n</html>';
+            
+            return html;
+        }
+
+        // Descargar configuración
+        function descargarConfig() {
+            var config = JSON.stringify(datosConfig, null, 2);
+            descargarArchivo('outkast-config.json', config);
+        }
+
+        // Función para descargar archivos
+        function descargarArchivo(nombre, contenido) {
+            var elemento = document.createElement('a');
+            elemento.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(contenido));
+            elemento.setAttribute('download', nombre);
+            elemento.style.display = 'none';
+            document.body.appendChild(elemento);
+            elemento.click();
+            document.body.removeChild(elemento);
+        }
+
+        // Guardar todo en localStorage
+        function guardarTodo() {
+            try {
+                localStorage.setItem('outkastConfig', JSON.stringify(datosConfig));
+            } catch (e) {
+                // Error guardando, continuar sin problemas
+            }
+        }
+
+        // Mostrar mensaje de éxito
+        function mostrarMensaje(id) {
+            var elemento = document.getElementById(id);
+            elemento.style.display = 'block';
+            setTimeout(function() {
+                elemento.style.display = 'none';
+            }, 3000);
+        }
+
+        // Permitir Enter para login
+        document.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                if (document.getElementById('loginScreen').style.display !== 'none') {
+                    entrar();
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
